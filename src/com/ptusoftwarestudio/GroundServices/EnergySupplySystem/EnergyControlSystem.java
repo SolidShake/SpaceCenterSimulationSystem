@@ -1,11 +1,11 @@
 package com.ptusoftwarestudio.GroundServices.EnergySupplySystem;
 
 import com.ptusoftwarestudio.GroundServices.IGroundServiceControl;
+import com.ptusoftwarestudio.GroundServices.GroundServiceSystemMessage;
 
-import javax.sound.midi.MidiChannel;
 import java.util.Random;
 
-public class EnergyControlSystem implements IGroundServiceControl, IEnergyControlSystem {
+public final class EnergyControlSystem implements IGroundServiceControl {
 
     private static final short MAX_GENERATOR_VOLTAGE = 380;
     private static final short MIN_GENERATOR_VOLTAGE = 80;
@@ -13,231 +13,190 @@ public class EnergyControlSystem implements IGroundServiceControl, IEnergyContro
     private static final byte BACKUP_GENERATORS_COUNT = 3;
     private static final byte ELECTRICAL_SUBSTATION_COUNT = 3;
 
-    private static final String ERROR_POWER_ALREADY_ON = "Ошибка: Питание уже включено. Действие отменено";
-    private static final String ERROR_POWER_ALREADY_OFF = "Ошибка: Питание уже отключено. Действие отменено";
-    private static final String ERROR_POWER_OFF = "Ошибка: Питание отключено. Действие невозможно";
-    private static final String ERROR_SYSTEM_ALREADY_ON = "Ошибка: Система контроля уже включена. Действие отменено";
-    private static final String ERROR_SYSTEM_ALREADY_OFF = "Ошибка: Система контроля уже отключена. Действие отменено";
-    private static final String ERROR_SYSTEM_OFF = "Ошибка: Система контроля отключено. Действие невозможно";
     private static final String ERROR_GENERATOR_ALREADY_ON = "Ошибка: Генератор %d уже запущен. Действие отменено";
 
-    private static final String ACTION_POWER_SET_ON = "Питание включено";
-    private static final String ACTION_POWER_SET_OFF = "Питание отключено";
-    private static final String ACTION_SYSTEM_SET_ON = "Система контроля включена";
-    private static final String ACTION_SYSTEM_SET_OFF = "Система контроля отключена";
     private static final String ACTION_GENERATOR_SET_ON = "Генератор %d был запущен";
 
-    private Random random = new Random();
+    private static Random random = new Random();
 
-    private boolean power = false;
-    private boolean system = false;
+    private static boolean power = false;
+    private static boolean system = false;
 
-    private int[] generatorsVoltage = new int[GENERATORS_COUNT];
-    private int[] backupGeneratorsVoltage = new int[BACKUP_GENERATORS_COUNT];
-    private int[] electricalSubstationsVoltage = new int[ELECTRICAL_SUBSTATION_COUNT];
+    private static int[] generatorsVoltage = new int[GENERATORS_COUNT];
+    private static int[] backupGeneratorsVoltage = new int[BACKUP_GENERATORS_COUNT];
+    private static int[] electricalSubstationsVoltage = new int[ELECTRICAL_SUBSTATION_COUNT];
 
-    private void logMaker(String errorMessage) {
+    private static void logMaker(String errorMessage) {
         System.out.println("Система энергоснабжения: " + errorMessage);
     }
 
-    @Override public void turnPowerOn() {
-        if(!power) {
+    private static void turnPowerOn() {
+        if (!power) {
             power = true;
-            logMaker(ACTION_POWER_SET_ON);
-        }
-        else {
-           logMaker(ERROR_POWER_ALREADY_ON);
+            logMaker(GroundServiceSystemMessage.ACTION_POWER_SET_ON);
+        } else {
+            logMaker(GroundServiceSystemMessage.ERROR_POWER_ALREADY_ON);
         }
     }
 
-    @Override public void turnPowerOff() {
-        if(power) {
-            for(byte i = 0; i < ELECTRICAL_SUBSTATION_COUNT; i++) {
+    private static void turnPowerOff() {
+        if (power) {
+            for (byte i = 0; i < ELECTRICAL_SUBSTATION_COUNT; i++) {
                 electricalSubstationsVoltage[i] = 0;
             }
-            for(byte i = 0; i < BACKUP_GENERATORS_COUNT; i++) {
+            for (byte i = 0; i < BACKUP_GENERATORS_COUNT; i++) {
                 backupGeneratorsVoltage[i] = 0;
             }
-            for(byte i = 0; i < GENERATORS_COUNT; i++) {
+            for (byte i = 0; i < GENERATORS_COUNT; i++) {
                 generatorsVoltage[i] = 0;
             }
             system = false;
             power = false;
-            logMaker(ACTION_POWER_SET_OFF);
-        }
-        else {
-            logMaker(ERROR_POWER_ALREADY_OFF);
+            logMaker(GroundServiceSystemMessage.ACTION_POWER_SET_OFF);
+        } else {
+            logMaker(GroundServiceSystemMessage.ERROR_POWER_ALREADY_OFF);
         }
     }
 
-    @Override public boolean isPowerOn() {
+    private static boolean isPowerOn() {
         return power;
     }
 
-    @Override public void turnControlSystemOn() {
-        if(power) {
-            if(!system) {
+    public static void turnControlSystemOn() {
+        if (power) {
+            if (!system) {
                 system = true;
-                logMaker(ACTION_SYSTEM_SET_ON);
+                logMaker(GroundServiceSystemMessage.ACTION_SYSTEM_SET_ON);
+            } else {
+                logMaker(GroundServiceSystemMessage.ERROR_SYSTEM_ALREADY_ON);
             }
-            else {
-                logMaker(ERROR_SYSTEM_ALREADY_ON);
-            }
-        }
-        else {
-            logMaker(ERROR_POWER_OFF);
+        } else {
+            logMaker(GroundServiceSystemMessage.ERROR_POWER_OFF);
         }
     }
 
-    @Override public void turnControlSystemOff() {
-        if(power) {
-            if(system) {
+    private static void turnControlSystemOff() {
+        if (power) {
+            if (system) {
                 system = false;
-                logMaker(ACTION_SYSTEM_SET_OFF);
+                logMaker(GroundServiceSystemMessage.ACTION_SYSTEM_SET_OFF);
+            } else {
+                logMaker(GroundServiceSystemMessage.ERROR_SYSTEM_ALREADY_OFF);
             }
-            else {
-                logMaker(ERROR_SYSTEM_ALREADY_OFF);
-            }
-        }
-        else {
-            logMaker(ERROR_POWER_OFF);
+        } else {
+            logMaker(GroundServiceSystemMessage.ERROR_POWER_OFF);
         }
     }
 
-    @Override public boolean isControlSystemOn() {
+    private static boolean isControlSystemOn() {
         return system;
     }
 
-    @Override public void setGeneratorsPowerOn() {
-        if(power) {
-            if(system) {
-                for(byte i = 0; i < GENERATORS_COUNT; i++) {
-                    if(generatorsVoltage[i] <= 0) {
+    private static void setGeneratorsPowerOn() {
+        if (power) {
+            if (system) {
+                for (byte i = 0; i < GENERATORS_COUNT; i++) {
+                    if (generatorsVoltage[i] <= 0) {
                         generatorsVoltage[i] = MIN_GENERATOR_VOLTAGE + random.nextInt(MAX_GENERATOR_VOLTAGE -
                                 MIN_GENERATOR_VOLTAGE);
                         logMaker(String.format(ACTION_GENERATOR_SET_ON, i));
-                    }
-                    else {
+                    } else {
                         logMaker(String.format(ERROR_GENERATOR_ALREADY_ON, i));
                     }
                 }
+            } else {
+                logMaker(GroundServiceSystemMessage.ERROR_SYSTEM_OFF);
             }
-            else {
-                logMaker(ERROR_SYSTEM_OFF);
-            }
-        }
-        else {
-            logMaker(ERROR_POWER_OFF);
+        } else {
+            logMaker(GroundServiceSystemMessage.ERROR_POWER_OFF);
         }
     }
 
-    @Override
-    public void setGeneratorsPowerOff() {
+    private static void setGeneratorsPowerOff() {
 
     }
 
-    @Override
-    public void setGeneratorPowerOn(int generatorNumber) {
+    private static void setGeneratorPowerOn(int generatorNumber) {
 
     }
 
-    @Override
-    public void setGeneratorPowerOff(int generatorNumber) {
+    private static void setGeneratorPowerOff(int generatorNumber) {
 
     }
 
-    @Override
-    public void setBackupGeneratorsPowerOn() {
+    private static void setBackupGeneratorsPowerOn() {
 
     }
 
-    @Override
-    public void setBackupGeneratorsPowerOff() {
+    private static void setBackupGeneratorsPowerOff() {
 
     }
 
-    @Override
-    public void setBackupGeneratorPowerOn(int backupGeneratorNumber) {
+    private static void setBackupGeneratorPowerOn(int backupGeneratorNumber) {
 
     }
 
-    @Override
-    public void setBackupGeneratorPowerOff(int backupGeneratorNumber) {
+    private static void setBackupGeneratorPowerOff(int backupGeneratorNumber) {
 
     }
 
-    @Override
-    public void showAllGeneratorsVoltage() {
+    private static void showAllGeneratorsVoltage() {
 
     }
 
-    @Override
-    public int getGeneratorVoltage(int generatorNumber) {
+    private static int getGeneratorVoltage(int generatorNumber) {
         return 0;
     }
 
-    @Override
-    public int getBackupGeneratorVoltage(int backupGeneratorNumber) {
+    private static int getBackupGeneratorVoltage(int backupGeneratorNumber) {
         return 0;
     }
 
-    @Override
-    public int getGeneratorsCount() {
+    private static int getGeneratorsCount() {
         return 0;
     }
 
-    @Override
-    public int getBackupGeneratorsCount() {
+    private static int getBackupGeneratorsCount() {
         return 0;
     }
 
-    @Override
-    public void setElectricalSubstationsPowerOn() {
+    private static void setElectricalSubstationsPowerOn() {
 
     }
 
-    @Override
-    public void setElectricalSubstationsPowerOff() {
+    private static void setElectricalSubstationsPowerOff() {
 
     }
 
-    @Override
-    public void setElectricalSubstationPowerOn(int generatorNumber) {
+    private static void setElectricalSubstationPowerOn(int generatorNumber) {
 
     }
 
-    @Override
-    public void setElectricalSubstationPowerOff(int generatorNumber) {
+    private static void setElectricalSubstationPowerOff(int generatorNumber) {
 
     }
 
-    @Override
-    public void showAllElectricalSubstationsVoltage() {
+    private static void showAllElectricalSubstationsVoltage() {
 
     }
 
-    @Override
-    public int getElectricalSubstationVoltage(int generatorNumber) {
+    private static int getElectricalSubstationVoltage(int generatorNumber) {
         return 0;
     }
 
-    @Override
-    public int getElectricalSubstationsCount() {
+    private static int getElectricalSubstationsCount() {
         return 0;
     }
 
-    @Override
-    public int checkSubstationsEnergy() {
+    private static int checkSubstationsEnergy() {
         return 0;
     }
 
-    @Override
-    public boolean connectToEnergy(double[] members) {
+    private static boolean connectToEnergy(double[] members) {
         return false;
     }
 
-    @Override
-    public void adaptiveEnergyControlSystem(int substationNumber) {
+    private static void adaptiveEnergyControlSystem(int substationNumber) {
 
     }
 
@@ -257,12 +216,23 @@ public class EnergyControlSystem implements IGroundServiceControl, IEnergyContro
     }
 
     @Override
+    public void killFire() {
+        
+    }
+
+    @Override
     public double getSystemVoltage() {
         return 0;
     }
 
     @Override
-    public boolean isSystemOk() {
+    public boolean isSystemGo() {
         return false;
+    }
+
+
+    @Override
+    public boolean isFireHere() {
+        return random.nextInt(10) == 9;
     }
 }

@@ -4,6 +4,8 @@ public interface IGroundServiceControl {
     void startSystem();
     void shutdownSystem();
     void showAllTelemetry();
+    void killFire();
     double getSystemVoltage();
-    boolean isSystemOk();
+    boolean isSystemGo();
+    boolean isFireHere();
 }
