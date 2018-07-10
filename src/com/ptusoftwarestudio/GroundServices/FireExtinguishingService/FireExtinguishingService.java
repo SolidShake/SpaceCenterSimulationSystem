@@ -1,6 +1,7 @@
 package com.ptusoftwarestudio.GroundServices.FireExtinguishingService;
 
 import com.ptusoftwarestudio.GroundServices.IGroundServiceControl;
+import com.ptusoftwarestudio.GroundServices.GroundServiceSystemMessage;
 import java.util.Random;
 
 public class FireExtinguishingService implements IGroundServiceControl {
@@ -8,17 +9,11 @@ public class FireExtinguishingService implements IGroundServiceControl {
     private static final short MIN_TEMP_WATER = 5;
     private static final short MAX_TEMP_WATER = 90;
     private static final short CRITICAL_LEVEL_OF_WATER = 20;
-    private static final short INDICATORS_COUNT = 100;
+    private static final short INDICATORS_COUNT = 20;
 
-    private static final String ERROR_POWER_ALREADY_ON = "Ошибка: Питание уже включено. Действие отменено.";
-    private static final String ERROR_POWER_ALREADY_OFF = "Ошибка: Питание уже отключено. Действие отменено";
+    private static int[] indicatorsVoltage = new int[INDICATORS_COUNT];
 
-    private static final String ACTION_POWER_SET_ON = "Питание включено";
-    private static final String ACTION_POWER_SET_OFF = "Питание отключено";
-
-    private int[] indicatorsVoltage = new int[INDICATORS_COUNT];
-
-    private Random random = new Random();
+    private static Random random = new Random();
 
     private static boolean power = false;
 
@@ -28,52 +23,78 @@ public class FireExtinguishingService implements IGroundServiceControl {
 
     private static void turnPowerOn() {
         if(!power) {
+            for(short i = 0; i < INDICATORS_COUNT; i ++) {
+                //8-10 volt
+                indicatorsVoltage[i] = 8 + random.nextInt(2);
+            }
             power = true;
-            logMaker(ACTION_POWER_SET_ON);
+            logMaker(GroundServiceSystemMessage.ACTION_POWER_SET_ON);
         } else {
-            logMaker(ERROR_POWER_ALREADY_ON);
+            logMaker(GroundServiceSystemMessage.ERROR_POWER_ALREADY_ON);
         }
     };
 
     private static void turnPowerOff() {
         if(power) {
-            //
+            for(short i = 0; i < INDICATORS_COUNT; i ++) {
+                indicatorsVoltage[i] = 0;
+            }
+            power = false;
+            logMaker(GroundServiceSystemMessage.ACTION_POWER_SET_OFF);
         } else {
-            logMaker(ERROR_POWER_ALREADY_OFF);
+            logMaker(GroundServiceSystemMessage.ERROR_POWER_ALREADY_OFF);
         }
-
     };
 
     private static boolean isPowerOn() {
-       return false;
+       return power;
     };
 
-    private static void checkAllSensorInArea(int numberOfArea) {
+    private static boolean checkAllSensor() {
+        for(int voltage : indicatorsVoltage) {
+            if(voltage <= 8 && voltage >= 10) {
+                logMaker(GroundServiceSystemMessage.ERROR_SENSOR_NOT_WORKING);
 
-    };
+                return false;
+            } else {
+                logMaker(GroundServiceSystemMessage.ACTION_SENSOR_SYSTEM_WORKING);
+            }
+        }
 
-    private static double checkTemperatureInArea(int numberOfArea) {
-        return 0;
-    };
-
-    private static void checkAllFireExtinguishingSystem() {
-
+        return true;
     };
 
     //In Percent
     private static double checkWaterLevelInTank() {
-        return 0;
+        //0-100%
+        double waterLevel = random.nextInt(100);
+
+        return waterLevel;
+    }
+
+    private static void checkAllFireExtinguishingSystem() {
+        boolean sensorStatus = checkAllSensor();
+        boolean waterStatus = (checkWaterLevelInTank() > CRITICAL_LEVEL_OF_WATER);
+
+        if(sensorStatus && waterStatus) {
+            logMaker(GroundServiceSystemMessage.ACTION_ALL_SYSTEM_WORKING);
+        } else {
+            if (!sensorStatus) {
+                logMaker(GroundServiceSystemMessage.ERROR_SENSOR_NOT_WORKING);
+            }
+            if (!waterStatus) {
+                logMaker(GroundServiceSystemMessage.ERROR_WATEL_LEVEL_IS_LOW);
+            }
+        }
+
     };
 
-    //In Degrees Celsius
-    private static double checkWaterTempInTank() {
-        return 0;
-    }
+    private static double checkTemperature() {
+        //20-100 C
+        int tempetature = 20 + random.nextInt(80);
 
-    //In Cubic Meters
-    private static double checkWaterConsumption() {
-        return 0;
-    }
+        return tempetature;
+    };
 
 
     @Override
@@ -98,7 +119,13 @@ public class FireExtinguishingService implements IGroundServiceControl {
 
     @Override
     public double getSystemVoltage() {
-        return 0;
+        double SystemVoltage = 0.0;
+
+        for(int voltage : indicatorsVoltage) {
+            SystemVoltage += voltage;
+        }
+
+        return SystemVoltage;
     };
 
     @Override
