@@ -24,6 +24,10 @@ public class FireExtinguishingService implements IGroundServiceControl {
     private static void turnPowerOn() {
         if(!power) {
             for(short i = 0; i < INDICATORS_COUNT; i ++) {
+                int chanceOfBraking = random.nextInt(100);
+                if(chanceOfBraking > 95){
+                    indicatorsVoltage[i] = 0;
+                }
                 //8-10 volt
                 indicatorsVoltage[i] = 8 + random.nextInt(2);
             }
