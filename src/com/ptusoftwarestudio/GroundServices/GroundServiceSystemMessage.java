@@ -8,8 +8,15 @@ public final class GroundServiceSystemMessage {
     public static final String ERROR_SYSTEM_ALREADY_OFF = "Ошибка: Система контроля уже отключена. Действие отменено";
     public static final String ERROR_SYSTEM_OFF = "Ошибка: Система контроля отключена. Действие невозможно";
 
+    public static final String ERROR_SENSOR_NOT_WORKING = "Ошибка: сенсор системы работает некорректно";
+    public static final String ERROR_WATEL_LEVEL_IS_LOW = "Ошибка: уровень воды ниже минимально допустимого";
+
+
     public static final String ACTION_POWER_SET_ON = "Питание включено";
     public static final String ACTION_POWER_SET_OFF = "Питание отключено";
     public static final String ACTION_SYSTEM_SET_ON = "Система контроля включена";
     public static final String ACTION_SYSTEM_SET_OFF = "Система контроля отключена";
+
+    public static final String ACTION_SENSOR_SYSTEM_WORKING = "Система сенсоров работает исправно";
+    public static final String ACTION_ALL_SYSTEM_WORKING = "Все системы фунцуионируют нормально";
 }
