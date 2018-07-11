@@ -7,15 +7,27 @@ public final class GroundServiceSystemMessage {
     public static final String ERROR_SYSTEM_ALREADY_ON = "Ошибка: Система контроля уже включена. Действие отменено";
     public static final String ERROR_SYSTEM_ALREADY_OFF = "Ошибка: Система контроля уже отключена. Действие отменено";
     public static final String ERROR_SYSTEM_OFF = "Ошибка: Система контроля отключена. Действие невозможно";
+    public static final String ERROR_GENERATOR_ALREADY_ON = "Ошибка: Генератор %d уже запущен. Действие отменено";
+    public static final String ERROR_GENERATOR_ALREADY_OFF = "Ошибка: Генератор %d уже тключен. Действие отменено";
+    public static final String ERROR_BACKUP_GENERATOR_ALREADY_ON = "Ошибка: Резервный генератор %d уже запущен. Действие отменено";
+    public static final String ERROR_BACKUP_GENERATOR_ALREADY_OFF = "Ошибка: Резервный генератор %d уже тключен. Действие отменено";
+    public static final String ERROR_GENERATOR_IS_OFF = "Ошибка: Генератор %d отключен. Действие невозможно";
+    public static final String ERROR_BACKUP_GENERATOR_IS_OFF = "Ошибка: Резервный генератор %d отключен. Действие невозможно";
 
     public static final String ERROR_SENSOR_NOT_WORKING = "Ошибка: сенсор системы работает некорректно";
-    public static final String ERROR_WATEL_LEVEL_IS_LOW = "Ошибка: уровень воды ниже минимально допустимого";
+    public static final String ERROR_WATER_LEVEL_IS_LOW = "Ошибка: уровень воды ниже минимально допустимого";
 
 
     public static final String ACTION_POWER_SET_ON = "Питание включено";
     public static final String ACTION_POWER_SET_OFF = "Питание отключено";
     public static final String ACTION_SYSTEM_SET_ON = "Система контроля включена";
     public static final String ACTION_SYSTEM_SET_OFF = "Система контроля отключена";
+    public static final String ACTION_GENERATOR_SET_ON = "Генератор %d был запущен";
+    public static final String ACTION_GENERATOR_SET_OFF = "Генератор %d был отключен";
+    public static final String ACTION_BACKUP_GENERATOR_SET_ON = "Резервный генератор %d был запущен";
+    public static final String ACTION_BACKUP_GENERATOR_SET_OFF = "Резервынй генератор %d был отключен";
+    public static final String ACTION_SHOW_GENERATOR_VOLTAGE = "Напряжение генератора %d: %d";
+    public static final String ACTION_SHOW_BACKUP_GENERATOR_VOLTAGE = "Напряжение резервного генератора %d: %d";
 
     public static final String ACTION_SENSOR_SYSTEM_WORKING = "Система сенсоров работает исправно";
     public static final String ACTION_ALL_SYSTEM_WORKING = "Все системы фунцуионируют нормально";
