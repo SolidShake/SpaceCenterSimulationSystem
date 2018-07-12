@@ -87,7 +87,7 @@ public class FireExtinguishingService implements IGroundServiceControl {
                 logMaker(GroundServiceSystemMessage.ERROR_SENSOR_NOT_WORKING);
             }
             if (!waterStatus) {
-                logMaker(GroundServiceSystemMessage.ERROR_WATEL_LEVEL_IS_LOW);
+                logMaker(GroundServiceSystemMessage.ERROR_WATER_LEVEL_IS_LOW);
             }
         }
 
