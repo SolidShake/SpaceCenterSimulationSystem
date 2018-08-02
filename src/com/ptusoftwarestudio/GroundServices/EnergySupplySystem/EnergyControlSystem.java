@@ -15,7 +15,7 @@ public final class EnergyControlSystem implements IGroundServiceControl {
     private static Random random = new Random();
     private static boolean power = false;
     private static boolean system = false;
-    private static boolean systemGo = false;
+    private static boolean systemGo = true;
 
     private static int[] generatorsVoltage = new int[GENERATORS_COUNT];
     private static int[] backupGeneratorsVoltage = new int[BACKUP_GENERATORS_COUNT];
