@@ -16,8 +16,12 @@ public final class GroundServiceSystemMessage {
     public static final String ERROR_ELECTRICAL_SUBSTATION_IS_OFF = "Ошибка: Подстанция %d отключена. Действие невозможно";
     public static final String ERROR_NOT_ENOUGH_POWER = "Ошибка: Недостаточно энергии чтобы подключить все системы к питанию";
 
+    public static final String ERROR_FIRE_EXTINGUISHING_SYSTEM_ALREADY_ON = "Ошибка: система пожаротушения уже включена";
+    public static final String ERROR_FIRE_EXTINGUISHING_SYSTEM_ALREADY_OFF = "Ошибка: система пожаротушения уже отключена";
+    public static final String ERROR_FIRE_EXTINGUISHING_SYSTEM_OFF = "Ошибка: Система пожаротушения отключена. Действие невозможно";
     public static final String ERROR_SENSOR_NOT_WORKING = "Ошибка: сенсор системы работает некорректно";
     public static final String ERROR_WATER_LEVEL_IS_LOW = "Ошибка: уровень воды ниже минимально допустимого";
+    public static final String ERROR_FIRE_NOT_EXTINGUISHED = "Система пожаротушения не смогла потушить пожар";
 
 
     public static final String ACTION_POWER_SET_ON = "Питание включено";
@@ -37,6 +41,10 @@ public final class GroundServiceSystemMessage {
     public static final String ACTION_SYSTEM_TURNED_ON = "Система включена";
     public static final String ACTION_SYSTEM_TURNED_OFF = "Система отключена";
 
+    public static final String ACTION_FIRE_EXTINGUISHING_SYSTEM_ON = "Система пожаротушения включена";
+    public static final String ACTION_FIRE_EXTINGUISHING_SYSTEM_OFF = "Система пожаротушения отключена";
     public static final String ACTION_SENSOR_SYSTEM_WORKING = "Система сенсоров работает исправно";
     public static final String ACTION_ALL_SYSTEM_WORKING = "Все системы фунцуионируют нормально";
+    public static final String ACTION_FIRE_EXTINGUISHED = "Система пожаротушения потушила пожар";
+
 }
