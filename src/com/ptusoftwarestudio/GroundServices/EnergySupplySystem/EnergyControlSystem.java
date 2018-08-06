@@ -15,7 +15,7 @@ public final class EnergyControlSystem implements IGroundServiceControl {
     private static Random random = new Random();
     private static boolean power = false;
     private static boolean system = false;
-    private static boolean systemGo = false;
+    private static boolean systemGo = true;
 
     private static int[] generatorsVoltage = new int[GENERATORS_COUNT];
     private static int[] backupGeneratorsVoltage = new int[BACKUP_GENERATORS_COUNT];
@@ -53,10 +53,6 @@ public final class EnergyControlSystem implements IGroundServiceControl {
         }
     }
 
-    private static boolean isPowerOn() {
-        return power;
-    }
-
     public static void turnControlSystemOn() {
         if (power) {
             if (!system) {
@@ -83,17 +79,12 @@ public final class EnergyControlSystem implements IGroundServiceControl {
         }
     }
 
-    private static boolean isControlSystemOn() {
-        return system;
-    }
-
     private static void setGeneratorsPowerOn() {
         if (power) {
             if (system) {
                 for (byte i = 0; i < GENERATORS_COUNT; i++) {
                     if (generatorsVoltage[i] <= 0) {
-                        generatorsVoltage[i] = MIN_GENERATOR_VOLTAGE + random.nextInt(MAX_GENERATOR_VOLTAGE -
-                                MIN_GENERATOR_VOLTAGE);
+                        setGeneratorPowerOn(i);
                         logMaker(String.format(GroundServiceSystemMessage.ACTION_GENERATOR_SET_ON, i));
                     } else {
                         logMaker(String.format(GroundServiceSystemMessage.ERROR_GENERATOR_ALREADY_ON, i));
@@ -111,8 +102,8 @@ public final class EnergyControlSystem implements IGroundServiceControl {
         if (power) {
             if (system) {
                 for (byte i = 0; i < GENERATORS_COUNT; i++) {
-                    if (generatorsVoltage[i] != 0) {
-                        generatorsVoltage[i] = 0;
+                    if (getGeneratorVoltage(i) != 0) {
+                        setGeneratorPowerOff(i);
                         logMaker(String.format(GroundServiceSystemMessage.ACTION_GENERATOR_SET_OFF, i));
                     } else {
                         logMaker(String.format(GroundServiceSystemMessage.ERROR_GENERATOR_ALREADY_OFF, i));
@@ -161,32 +152,12 @@ public final class EnergyControlSystem implements IGroundServiceControl {
         }
     }
 
-    private static void setBackupGeneratorsPowerOn() {
-        if (power) {
-            if (system) {
-                for (byte i = 0; i < BACKUP_GENERATORS_COUNT; i++) {
-                    if (backupGeneratorsVoltage[i] <= 0) {
-                        backupGeneratorsVoltage[i] = MIN_GENERATOR_VOLTAGE + random.nextInt(MAX_GENERATOR_VOLTAGE -
-                                MIN_GENERATOR_VOLTAGE);
-                        logMaker(String.format(GroundServiceSystemMessage.ACTION_BACKUP_GENERATOR_SET_ON, i));
-                    } else {
-                        logMaker(String.format(GroundServiceSystemMessage.ERROR_BACKUP_GENERATOR_ALREADY_ON, i));
-                    }
-                }
-            } else {
-                logMaker(GroundServiceSystemMessage.ERROR_SYSTEM_OFF);
-            }
-        } else {
-            logMaker(GroundServiceSystemMessage.ERROR_POWER_OFF);
-        }
-    }
-
     private static void setBackupGeneratorsPowerOff() {
         if (power) {
             if (system) {
                 for (byte i = 0; i < BACKUP_GENERATORS_COUNT; i++) {
-                    if (backupGeneratorsVoltage[i] != 0) {
-                        backupGeneratorsVoltage[i] = 0;
+                    if (getBackupGeneratorVoltage(i) != 0) {
+                        setBackupGeneratorPowerOff(i);
                         logMaker(String.format(GroundServiceSystemMessage.ACTION_BACKUP_GENERATOR_SET_OFF, i));
                     } else {
                         logMaker(String.format(GroundServiceSystemMessage.ERROR_BACKUP_GENERATOR_ALREADY_OFF, i));
@@ -241,7 +212,7 @@ public final class EnergyControlSystem implements IGroundServiceControl {
                 for (int i = 0; i < GENERATORS_COUNT; i++) {
                     if (generatorsVoltage[i] > 0) {
                         logMaker(String.format(GroundServiceSystemMessage.ACTION_SHOW_GENERATOR_VOLTAGE, i,
-                                generatorsVoltage[i]));
+                                getGeneratorVoltage(i)));
                     } else {
                         logMaker(String.format(GroundServiceSystemMessage.ERROR_GENERATOR_IS_OFF, i));
                     }
@@ -383,7 +354,7 @@ public final class EnergyControlSystem implements IGroundServiceControl {
             if (system) {
                 for (int i = 0; i < ELECTRICAL_SUBSTATION_COUNT; i++) {
                     logMaker(String.format(GroundServiceSystemMessage.ACTION_SHOW_ELECTRICAL_SUBSTATION_VOLTAGE,
-                            i, electricalSubstationsVoltage[i]));
+                            i, getElectricalSubstationVoltage(i)));
                 }
             } else {
                 logMaker(GroundServiceSystemMessage.ERROR_SYSTEM_OFF);
@@ -411,10 +382,6 @@ public final class EnergyControlSystem implements IGroundServiceControl {
             logMaker(GroundServiceSystemMessage.ERROR_POWER_OFF);
             return 0;
         }
-    }
-
-    private static int getElectricalSubstationsCount() {
-        return ELECTRICAL_SUBSTATION_COUNT;
     }
 
     private static int getCurrentSubstationsVoltage() {

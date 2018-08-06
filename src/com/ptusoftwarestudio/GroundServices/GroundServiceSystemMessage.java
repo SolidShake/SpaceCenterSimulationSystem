@@ -48,4 +48,8 @@ public final class GroundServiceSystemMessage {
     public static final String ACTION_ALL_SYSTEM_WORKING = "Все системы фунцуионируют нормально";
     public static final String ACTION_FIRE_EXTINGUISHED = "Система пожаротушения потушила пожар";
 
+    public static final String MESSAGE_LAUNCH_CANCELED = "Запуск отменен";
+    public static final String MESSAGE_ENERGYCONTROLSYSTEM_GO = "Система энергоснабжения: GO";
+    public static final String MESSAGE_ENERGYCONTROLSYSTEM_STOP = "Система энергоснабжения: STOP";
+
 }
