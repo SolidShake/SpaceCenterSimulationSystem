@@ -15,7 +15,6 @@ public class FireExtinguishingService implements IGroundServiceControl {
 
     private static boolean power = false;
     private static boolean system = false;
-    //private static boolean systemGo = false;
 
     private static void logMaker(String errorMessage) {
         System.out.println("Система пожаротушения: " + errorMessage);
@@ -44,7 +43,7 @@ public class FireExtinguishingService implements IGroundServiceControl {
 
     private static boolean isPowerOn() {
        return power;
-    };
+    }
 
     private static void turnFireExtinguishingSystemOn() {
         if(power) {
@@ -120,12 +119,9 @@ public class FireExtinguishingService implements IGroundServiceControl {
         return true;
     }
 
-    //In Percent
     private static double checkWaterLevelInTank() {
-        //0-100%
-        double waterLevel = random.nextInt(100);
-
-        return waterLevel;
+        //0-100% water level
+        return random.nextInt(100);
     }
 
     private static boolean checkAllFireExtinguishingSystem() {
@@ -150,23 +146,27 @@ public class FireExtinguishingService implements IGroundServiceControl {
 
     private static double checkTemperature() {
         //20-100 C
-        int tempetature = 20 + random.nextInt(80);
-
-        return tempetature;
+        return (20 + random.nextInt(80));
     }
 
-    public static boolean fireExtinguishing() {
-        if(checkAllFireExtinguishingSystem()) {
-            logMaker(GroundServiceSystemMessage.ACTION_FIRE_EXTINGUISHED);
+    public static boolean fireExtinguishing(boolean fireStatus) {
+        if(fireStatus) {
+            if(checkAllFireExtinguishingSystem()) {
+                logMaker(GroundServiceSystemMessage.ACTION_FIRE_EXTINGUISHED);
 
-            return true;
+                return true;
+            } else {
+                logMaker(GroundServiceSystemMessage.ERROR_FIRE_NOT_EXTINGUISHED);
+
+                return false;
+            }
         } else {
-            logMaker(GroundServiceSystemMessage.ERROR_FIRE_NOT_EXTINGUISHED);
+            logMaker(GroundServiceSystemMessage.ERROR_NO_FIRE);
 
             return false;
         }
-    }
 
+    }
 
     @Override
     public void startSystem() {
@@ -198,7 +198,7 @@ public class FireExtinguishingService implements IGroundServiceControl {
 
     @Override
     public void killFire() {
-        fireExtinguishing();
+        fireExtinguishing(isFireHere());
     }
 
     @Override

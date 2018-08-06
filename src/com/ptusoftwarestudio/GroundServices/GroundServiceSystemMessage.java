@@ -22,6 +22,7 @@ public final class GroundServiceSystemMessage {
     public static final String ERROR_SENSOR_NOT_WORKING = "Ошибка: сенсор системы работает некорректно";
     public static final String ERROR_WATER_LEVEL_IS_LOW = "Ошибка: уровень воды ниже минимально допустимого";
     public static final String ERROR_FIRE_NOT_EXTINGUISHED = "Система пожаротушения не смогла потушить пожар";
+    public static final String ERROR_NO_FIRE = "Пожар не обнаружен. Действие отменено.";
 
 
     public static final String ACTION_POWER_SET_ON = "Питание включено";
